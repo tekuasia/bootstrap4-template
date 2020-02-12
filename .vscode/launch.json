@@ -11,6 +11,10 @@
         "webpack:///./src/scripts/*.js": "${webRoot}/src/scripts/*.js",
         "webpack:///./node_modules/*": "${webRoot}/node_modules/*"
       },
+      "pathMapping": {
+        "webpack:///./src/scripts/*.js": "${webRoot}/src/scripts/*.js",
+        "webpack:///./node_modules/*": "${webRoot}/node_modules/*"
+      },
       "preLaunchTask": "Watch",
       "sourceMaps": true,
       "trace": true
