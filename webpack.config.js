@@ -117,7 +117,7 @@ const configWebpack = (_, argv) => {
           to: 'public'
         }
       ]),
-      shouldMinify && new MiniCssExtractPlugin({
+      isProduction && new MiniCssExtractPlugin({
         filename: shouldHashName ? 'styles/[name].[contenthash:8].css' : 'styles/[name].css',
         chunkFilename: shouldHashName ? 'styles/[name].[contenthash:8].chunk.css' : 'styles/[name].chunk.css'
       }),

@@ -1,12 +1,12 @@
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const postcssNormalize = require('postcss-normalize')
-const { isDevelopment, shouldMinify, shouldUseSourceMap, shouldPrefixCss } = require('.')
+const { isDevelopment, isProduction, shouldUseSourceMap, shouldPrefixCss } = require('.')
 
 module.exports = (cssOptions, preProcessor) => {
   const loaders = [
     isDevelopment && require.resolve('style-loader'),
-    shouldMinify && {
+    isProduction && {
       loader: MiniCssExtractPlugin.loader,
       options: {
         hmr: isDevelopment
