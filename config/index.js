@@ -11,7 +11,7 @@ const shouldHashName = isDevelopment
 // paths
 const rootDir = path.resolve(__dirname, '..')
 const srcDir = path.join(rootDir, 'src')
-const buildDir = path.join(rootDir, 'build')
+const buildDir = path.join(rootDir, 'dist')
 
 module.exports = {
   isProduction,
