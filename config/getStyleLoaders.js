@@ -1,12 +1,12 @@
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const postcssNormalize = require('postcss-normalize')
-const { isDevelopment, isProduction, shouldUseSourceMap } = require('.')
+const { isDevelopment, isProduction, shouldMinify, shouldUseSourceMap, shouldPrefixCss } = require('.')
 
 module.exports = (cssOptions, preProcessor) => {
   const loaders = [
     isDevelopment && require.resolve('style-loader'),
-    isProduction && {
+    shouldMinify && {
       loader: MiniCssExtractPlugin.loader,
       options: {
         hmr: isDevelopment
@@ -16,7 +16,7 @@ module.exports = (cssOptions, preProcessor) => {
       loader: require.resolve('css-loader'),
       options: cssOptions
     },
-    {
+    shouldPrefixCss && {
       // Options for PostCSS as we reference these options twice
       // Adds vendor prefixing based on your specified browser support in
       // package.json
@@ -54,7 +54,7 @@ module.exports = (cssOptions, preProcessor) => {
       {
         loader: require.resolve(preProcessor),
         options: {
-          sourceMap: true
+          sourceMap: isProduction && shouldUseSourceMap
         }
       }
     )

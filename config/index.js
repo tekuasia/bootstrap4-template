@@ -5,6 +5,7 @@ const isDevelopment = !isProduction
 const shouldUseSourceMap = isDevelopment
 const shouldMinify = isProduction
 const shouldPreload = false
+const shouldPrefixCss = isProduction
 
 // paths
 const rootDir = path.resolve(__dirname, '..')
@@ -17,6 +18,7 @@ module.exports = {
   shouldUseSourceMap,
   shouldMinify,
   shouldPreload,
+  shouldPrefixCss,
   rootDir,
   srcDir,
   buildDir

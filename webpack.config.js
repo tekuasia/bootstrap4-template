@@ -58,7 +58,7 @@ const config = {
         use: getStyleLoaders(
           {
             importLoaders: 3,
-            sourceMap: isProduction && shouldUseSourceMap
+            sourceMap: shouldUseSourceMap
           },
           'sass-loader'
         )
@@ -165,7 +165,6 @@ const config = {
         }
       }
     },
-    minimize: shouldMinify,
     minimizer: []
   }
 }
