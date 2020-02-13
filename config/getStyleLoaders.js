@@ -1,7 +1,7 @@
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const postcssNormalize = require('postcss-normalize')
-const { isDevelopment, isProduction, shouldMinify, shouldUseSourceMap, shouldPrefixCss } = require('.')
+const { isDevelopment, shouldMinify, shouldUseSourceMap, shouldPrefixCss } = require('.')
 
 module.exports = (cssOptions, preProcessor) => {
   const loaders = [
@@ -38,7 +38,7 @@ module.exports = (cssOptions, preProcessor) => {
           // which in turn let's users customize the target behavior as per their needs.
           postcssNormalize()
         ],
-        sourceMap: isProduction && shouldUseSourceMap
+        sourceMap: shouldUseSourceMap
       }
     }
   ].filter(Boolean)
@@ -48,13 +48,13 @@ module.exports = (cssOptions, preProcessor) => {
       {
         loader: require.resolve('resolve-url-loader'),
         options: {
-          sourceMap: isProduction && shouldUseSourceMap
+          sourceMap: shouldUseSourceMap
         }
       },
       {
         loader: require.resolve(preProcessor),
         options: {
-          sourceMap: isProduction && shouldUseSourceMap
+          sourceMap: shouldUseSourceMap
         }
       }
     )
