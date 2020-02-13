@@ -1,7 +1,7 @@
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const postcssNormalize = require('postcss-normalize')
-const { isDevelopment, isProduction, shouldUseSourceMap } = require('./constants')
+const { isDevelopment, isProduction, shouldUseSourceMap } = require('.')
 
 module.exports = (cssOptions, preProcessor) => {
   const loaders = [

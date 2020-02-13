@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.js": "/scripts/main.c9e1b0e7.js",
+    "runtime.js": "/scripts/runtime.acfdeda3.js",
+    "vendor.js": "/scripts/vendor.9972e54a.js",
+    "icon.ico": "/icon.ico",
+    "index.html": "/index.html"
+  },
+  "entrypoints": [
+    "scripts/runtime.acfdeda3.js",
+    "scripts/vendor.9972e54a.js",
+    "scripts/main.c9e1b0e7.js"
+  ]
+}

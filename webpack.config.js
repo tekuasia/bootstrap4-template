@@ -9,7 +9,18 @@ const CssUrlRelativePlugin = require('css-url-relative-plugin')
 const ManifestPlugin = require('webpack-manifest-plugin')
 const glob = require('glob')
 
-const { isProduction, isDevelopment, rootDir, srcDir, shouldUseSourceMap } = require('./config/constants')
+const {
+  isProduction,
+  isDevelopment,
+  // feature flags
+  shouldUseSourceMap,
+  shouldMinify,
+  shouldPreload,
+  // paths
+  rootDir,
+  srcDir,
+  buildDir
+} = require('./config')
 const getStyleLoaders = require('./config/getStyleLoaders')
 
 const config = {
@@ -18,8 +29,8 @@ const config = {
   devtool: shouldUseSourceMap ? 'inline-source-map' : 'source-map',
   entry: './src/scripts/index.js',
   output: {
-    filename: 'scripts/[name].[hash].js',
-    path: path.resolve(__dirname, 'dist')
+    filename: 'scripts/[name].[contenthash:8].js',
+    path: buildDir
   },
   module: {
     rules: [
@@ -100,7 +111,7 @@ const config = {
         to: 'public'
       }
     ]),
-    isProduction && new MiniCssExtractPlugin({
+    shouldMinify && new MiniCssExtractPlugin({
       filename: 'styles/[name].[contenthash:8].css',
       chunkFilename: 'styles/[name].[contenthash:8].chunk.css'
     }),
@@ -132,7 +143,7 @@ const config = {
     // Ignore moment.js locales for lighter builds
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.HashedModuleIdsPlugin(),
-    new PreloadWebpackPlugin({
+    shouldPreload && new PreloadWebpackPlugin({
       include: 'initial'
     }),
     new CssUrlRelativePlugin()
@@ -154,16 +165,22 @@ const config = {
         }
       }
     },
+    minimize: shouldMinify,
     minimizer: []
   }
 }
 
-if (!isDevelopment) {
+if (isProduction) {
   const TerserPlugin = require('terser-webpack-plugin')
   const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 
+  if (shouldMinify) {
+    config.optimization.minimizer.push(new TerserPlugin({
+      parallel: true // Need specific number of CPUs for CI or other systems
+    }))
+  }
+
   config.optimization.minimizer.push(
-    new TerserPlugin(),
     new OptimizeCSSAssetsPlugin({})
   )
 }
@@ -176,7 +193,7 @@ files.forEach(file => {
       filename: path.basename(file),
       template: file,
       favicon: path.resolve(path.join(srcDir, '/public/icon.ico')),
-      minify: !isDevelopment
+      minify: false
     })
   )
 })
