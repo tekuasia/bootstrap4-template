@@ -1,4 +1,3 @@
-
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const postcssNormalize = require('postcss-normalize')
 const { isDevelopment, isProduction, shouldUseSourceMap, shouldPrefixCss } = require('.')
@@ -44,20 +43,31 @@ module.exports = (cssOptions, preProcessor) => {
   ].filter(Boolean)
 
   if (preProcessor) {
-    loaders.push(
-      {
-        loader: require.resolve('resolve-url-loader'),
+    loaders.push({
+      loader: require.resolve('resolve-url-loader'),
+      options: {
+        sourceMap: shouldUseSourceMap
+      }
+    })
+
+    if (preProcessor === 'sass-loader') {
+      loaders.push({
+        loader: require.resolve(preProcessor),
         options: {
-          sourceMap: shouldUseSourceMap
+          sourceMap: shouldUseSourceMap,
+          sassOptions: {
+            outputStyle: 'expanded'
+          }
         }
-      },
-      {
+      })
+    } else {
+      loaders.push({
         loader: require.resolve(preProcessor),
         options: {
           sourceMap: shouldUseSourceMap
         }
-      }
-    )
+      })
+    }
   }
 
   return loaders

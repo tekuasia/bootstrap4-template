@@ -12,6 +12,14 @@ const shouldHashName = isDevelopment
 const rootDir = path.resolve(__dirname, '..')
 const srcDir = path.join(rootDir, 'src')
 const buildDir = path.join(rootDir, 'dist')
+const scriptDir = path.join(srcDir, 'scripts')
+const entry = {
+  main: path.join(scriptDir, 'index.js')
+}
+
+if (shouldMinify) {
+  entry['main.min'] = path.join(scriptDir, 'index.js')
+}
 
 module.exports = {
   isProduction,
@@ -21,6 +29,7 @@ module.exports = {
   shouldPreload,
   shouldPrefixCss,
   shouldHashName,
+  entry,
   rootDir,
   srcDir,
   buildDir

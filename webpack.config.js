@@ -25,15 +25,16 @@ const configWebpack = (_, argv) => {
     // paths
     rootDir,
     srcDir,
-    buildDir
+    buildDir,
+    entry
   } = require('./config')
   const getStyleLoaders = require('./config/getStyleLoaders')
 
   const config = {
     context: rootDir,
     mode: isDevelopment ? 'development' : 'production',
-    devtool: shouldUseSourceMap ? 'inline-source-map' : 'source-map',
-    entry: './src/scripts/index.js',
+    devtool: shouldUseSourceMap ? (isDevelopment ? 'inline-source-map' : 'source-map') : false,
+    entry,
     output: {
       filename: shouldHashName ? 'scripts/[name].[contenthash:8].js' : 'scripts/[name].js',
       path: buildDir
@@ -106,11 +107,11 @@ const configWebpack = (_, argv) => {
     },
     plugins: [
       new CleanWebpackPlugin(),
-      new webpack.ProvidePlugin({
-        $: 'jquery',
-        jQuery: 'jquery',
-        'windows.jQuery': 'jquery'
-      }),
+      // new webpack.ProvidePlugin({
+      //   $: 'jquery',
+      //   jQuery: 'jquery',
+      //   'windows.jQuery': 'jquery'
+      // }),
       new CopyWebpackPlugin([
         {
           from: './src/public',
@@ -118,8 +119,9 @@ const configWebpack = (_, argv) => {
         }
       ]),
       isProduction && new MiniCssExtractPlugin({
-        filename: shouldHashName ? 'styles/[name].[contenthash:8].css' : 'styles/[name].css',
-        chunkFilename: shouldHashName ? 'styles/[name].[contenthash:8].chunk.css' : 'styles/[name].chunk.css'
+        filename: shouldHashName ? 'styles/[name].[contenthash:8].css' : 'styles/[name].css'
+        // For chunks
+        // chunkFilename: shouldHashName ? 'styles/[name].[contenthash:8].chunk.css' : 'styles/[name].chunk.css'
       }),
       // Generate an asset manifest file with the following content:
       // - "files" key: Mapping of all asset filenames to their corresponding
@@ -156,7 +158,7 @@ const configWebpack = (_, argv) => {
     ].filter(Boolean),
     devServer: {
       contentBase: srcDir,
-      writeToDisk: true
+      writeToDisk: false
     },
     optimization: {
       runtimeChunk: 'single',
@@ -169,24 +171,47 @@ const configWebpack = (_, argv) => {
             priority: 10,
             enforce: true
           }
+          // For code splitting
+          // vendors: {
+          //   test: /node_modules[/\\]((?!jquery|bootstrap).)*$/,
+          //   chunks: 'initial',
+          //   name: 'vendors',
+          //   priority: 9,
+          //   enforce: true
+          // },
+          // jquery: {
+          //   test: /node_modules[/\\]jquery/,
+          //   chunks: 'initial',
+          //   name: 'jquery',
+          //   priority: 10,
+          //   enforce: true
+          // },
+          // bootstrap: {
+          //   test: /node_modules[/\\]bootstrap/,
+          //   chunks: 'initial',
+          //   name: 'bootstrap',
+          //   priority: 10,
+          //   enforce: true
+          // }
         }
       },
       minimizer: []
     }
   }
 
-  if (isProduction) {
+  if (shouldMinify) {
     const TerserPlugin = require('terser-webpack-plugin')
     const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 
-    if (shouldMinify) {
-      config.optimization.minimizer.push(new TerserPlugin({
-        parallel: true // Need specific number of CPUs for CI or other systems
-      }))
-    }
+    config.optimization.minimizer.push(new TerserPlugin({
+      include: /\.min\.js$/,
+      parallel: true // Need specific number of CPUs for CI or other systems
+    }))
 
     config.optimization.minimizer.push(
-      new OptimizeCSSAssetsPlugin({})
+      new OptimizeCSSAssetsPlugin({
+        assetNameRegExp: /\.min\.css$/
+      })
     )
   }
 
