@@ -8,6 +8,7 @@ const PreloadWebpackPlugin = require('preload-webpack-plugin')
 const CssUrlRelativePlugin = require('css-url-relative-plugin')
 const ManifestPlugin = require('webpack-manifest-plugin')
 const glob = require('glob')
+const { omitBy, flatten, uniq, map } = require('lodash')
 
 const configWebpack = (_, argv) => {
   if (argv && argv.mode === 'production') {
@@ -22,6 +23,7 @@ const configWebpack = (_, argv) => {
     shouldMinify,
     shouldPreload,
     shouldHashName,
+    shouldGenerateManifest,
     // paths
     rootDir,
     srcDir,
@@ -129,7 +131,7 @@ const configWebpack = (_, argv) => {
       //   `index.html`
       // - "entrypoints" key: Array of files which are included in `index.html`,
       //   can be used to reconstruct the HTML if necessary
-      new ManifestPlugin({
+      shouldGenerateManifest && new ManifestPlugin({
         fileName: 'asset-manifest.json',
         publicPath: '/',
         generate: (seed, files, entrypoints) => {
@@ -138,9 +140,14 @@ const configWebpack = (_, argv) => {
 
             return manifest
           }, seed)
-          const entrypointFiles = entrypoints.main.filter(
-            fileName => !fileName.endsWith('.map')
-          )
+
+          const entrypointFiles = flatten(uniq(map(entrypoints, (entryFiles, entryName) => {
+            if (entryName.includes('.min')) return false // minified
+
+            return entryFiles.filter(
+              fileName => !fileName.endsWith('.map')
+            )
+          }).filter(Boolean)))
 
           return {
             files: manifestFiles,
@@ -223,7 +230,8 @@ const configWebpack = (_, argv) => {
         filename: path.basename(file),
         template: file,
         favicon: path.resolve(path.join(srcDir, '/public/icon.ico')),
-        minify: false
+        minify: false,
+        chunks: shouldMinify ? omitBy(entry, f => !f.includes('.min')) : entry
       })
     )
   })

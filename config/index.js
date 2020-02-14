@@ -7,6 +7,7 @@ const shouldMinify = isProduction
 const shouldPreload = false
 const shouldPrefixCss = isProduction
 const shouldHashName = isDevelopment
+const shouldGenerateManifest = false
 
 // paths
 const rootDir = path.resolve(__dirname, '..')
@@ -14,11 +15,11 @@ const srcDir = path.join(rootDir, 'src')
 const buildDir = path.join(rootDir, 'dist')
 const scriptDir = path.join(srcDir, 'scripts')
 const entry = {
-  main: path.join(scriptDir, 'index.js')
+  index: path.join(scriptDir, 'index.js')
 }
 
 if (shouldMinify) {
-  entry['main.min'] = path.join(scriptDir, 'index.js')
+  entry['index.min'] = path.join(scriptDir, 'index.js')
 }
 
 module.exports = {
@@ -29,6 +30,7 @@ module.exports = {
   shouldPreload,
   shouldPrefixCss,
   shouldHashName,
+  shouldGenerateManifest,
   entry,
   rootDir,
   srcDir,
