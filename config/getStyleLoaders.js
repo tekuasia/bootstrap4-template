@@ -27,6 +27,7 @@ module.exports = (cssOptions, preProcessor) => {
         plugins: () => [
           require('postcss-flexbugs-fixes'),
           require('postcss-preset-env')({
+            browsers: 'last 2 versions',
             autoprefixer: {
               flexbox: 'no-2009'
             },
@@ -46,7 +47,8 @@ module.exports = (cssOptions, preProcessor) => {
     loaders.push({
       loader: require.resolve('resolve-url-loader'),
       options: {
-        sourceMap: shouldUseSourceMap
+        sourceMap: shouldUseSourceMap,
+        root: ''
       }
     })
 

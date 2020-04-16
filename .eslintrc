@@ -4,7 +4,7 @@
     "standard"
   ],
   "rules": {
-    "no-var": "error",
+    "no-var": "off", // allow var
     "consistent-return": "warn",
     "complexity": ["warn", { "max": 15 }],
     "padding-line-between-statements": [

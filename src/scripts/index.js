@@ -1,11 +1,7 @@
-// import 'bootstrap'
 import '../styles/index.scss'
 
-function docReady ($) {
+(function ($) {
+  // Doc ready
   $(function () {
-    // document ready
-    $('body').prepend('HELLO WORLD')
   })
-}
-
-docReady(jQuery)
+})(jQuery)

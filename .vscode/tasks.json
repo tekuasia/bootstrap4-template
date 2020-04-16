@@ -4,7 +4,28 @@
     {
       "label": "Watch",
       "type": "npm",
-      "script": "watch"
+      "script": "watch",
+      // This task is run before some debug tasks.
+      // Problem is, it's a watch script, and since it never exits, VSCode
+      // complains. All this is needed so VSCode just lets it run.
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "pattern": [
+            {
+              "regexp": ".",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": ".",
+            "endsPattern": ".",
+          }
+        }
+      ]
     }
   ]
 }
